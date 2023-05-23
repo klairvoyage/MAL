@@ -62,7 +62,7 @@ Contributions to this project are welcome! If you have any suggestions, bug repo
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the code for personal and commercial purposes.
+This project is licensed under the [GNU General Public License](LICENSE). Feel free to use, modify, and distribute the code for personal and commercial purposes.
 
 ---
 > This [README](README.md) was mainly written by ChatGPT! :)
