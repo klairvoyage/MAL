@@ -1,6 +1,9 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -14,46 +17,63 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class Main {
-    public static void main(String[] args) { //ACHTUNG: changes are made on the very same file
-        Scanner scanner = new Scanner(System.in);
+public class Main extends JFrame implements ActionListener {
+    private JLabel listTypeLabel, filePathLabel, bracketTypeLabel, importableLabel;
+    private JTextField filePathTextField;
+    private JComboBox<String> listTypeComboBox, bracketTypeComboBox, importableComboBox;
+    private JButton startButton;
+    public Main() {
+        setTitle("Anime/Manga List Processing");
+        setSize(650, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        int yo;
-        do {
-            System.out.println("Enter the list type (1 for anime, 2 for manga):");
-            yo = scanner.nextInt();
-        } while (yo!=1 && yo!=2);
-        String listType;
-        if (yo==1) listType = "anime";
-        else listType = "manga";
-        scanner.nextLine();
-        System.out.println("Enter the file path:");
-        String filePath = scanner.nextLine();
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(5, 2, 10, 10));
 
-        String bracketType;
-        do {
-            System.out.println("Enter what bracket of the list you want to remove (W for Watching, C for Completed, " +
-                    "O for On-Hold, D for Dropped, P for Plan to Watch, N for none):");
-            bracketType = scanner.nextLine();
-        } while (bracketType.charAt(0)!='W' && bracketType.charAt(0)!='C' && bracketType.charAt(0)!='O'
-                && bracketType.charAt(0)!='D' && bracketType.charAt(0)!='P' && bracketType.charAt(0)!='N');
+        listTypeLabel = new JLabel("Choose the list type:");
+        mainPanel.add(listTypeLabel);
 
-        int importable;
-        do {
-            System.out.println("Enter if you want to make all the entries of the new file importable (1/0 for Y/N):");
-            importable = scanner.nextInt();
-        } while (importable != 1 && importable!=0);
+        listTypeComboBox = new JComboBox<>();
+        listTypeComboBox.addItem("anime");
+        listTypeComboBox.addItem("manga");
+        mainPanel.add(listTypeComboBox);
 
-        switch (bracketType.charAt(0)) {
-                case 'W' -> bracketType = "Watching";
-                case 'C' -> bracketType = "Completed";
-                case 'O' -> bracketType = "On-Hold";
-                case 'D' -> bracketType = "Dropped";
-                case 'P' -> bracketType = "Plan to Watch";
-        }
-        if (bracketType.charAt(0)!='N') removeBracket(listType, filePath, bracketType);
-        if (importable==1) updateOnImport(listType, filePath);
-        System.out.println("Process successfully finished!");
+        filePathLabel = new JLabel("Enter the file path:");
+        mainPanel.add(filePathLabel);
+
+        filePathTextField = new JTextField();
+        mainPanel.add(filePathTextField);
+
+        bracketTypeLabel = new JLabel("Choose the bracket type to be removed:");
+        mainPanel.add(bracketTypeLabel);
+
+        bracketTypeComboBox = new JComboBox<>();
+        bracketTypeComboBox.addItem("Watching");
+        bracketTypeComboBox.addItem("Completed");
+        bracketTypeComboBox.addItem("On-Hold");
+        bracketTypeComboBox.addItem("Dropped");
+        bracketTypeComboBox.addItem("Plan to Watch");
+        bracketTypeComboBox.addItem("None");
+        mainPanel.add(bracketTypeComboBox);
+
+        importableLabel = new JLabel("Make all entries importable?");
+        mainPanel.add(importableLabel);
+
+        importableComboBox = new JComboBox<>();
+        importableComboBox.addItem("No");
+        importableComboBox.addItem("Yes");
+        mainPanel.add(importableComboBox);
+
+        startButton = new JButton("Start");
+        startButton.addActionListener(this);
+        mainPanel.add(startButton);
+
+        add(mainPanel);
+        setVisible(true);
+    }
+    public static void main(String[] args) {
+        new Main();
     }
 
     public static void removeBracket(String listType, String filePath, String bracketType) {
@@ -110,6 +130,26 @@ public class Main {
             transformer.transform(source, result);
         } catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == startButton) {
+            String listType = listTypeComboBox.getSelectedItem().toString();
+            String filePath = filePathTextField.getText();
+            String bracketType = bracketTypeComboBox.getSelectedItem().toString();
+            String importable = importableComboBox.getSelectedItem().toString();
+
+            if (bracketType.charAt(0)!='N') removeBracket(listType, filePath, bracketType);
+            if (importable.compareTo("Yes")==0) updateOnImport(listType, filePath);
+
+            JOptionPane.showMessageDialog(this, "Process successfully finished!");
+
+            //listTypeComboBox.setSelectedIndex(0);
+            //filePathTextField.setText("");
+            //bracketTypeComboBox.setSelectedIndex(0);
+            //importableComboBox.setSelectedIndex(0);
         }
     }
 }
