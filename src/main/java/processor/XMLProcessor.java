@@ -1,9 +1,7 @@
 package processor;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -16,34 +14,21 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XMLProcessor {
-    public void removeStatus(String listType, String filePath, String statusType) {
-        Document doc = parseDocument(filePath);
-        if (doc != null) {
-            NodeList nodeList = doc.getElementsByTagName(listType);
-            processRemoveStatus(nodeList, statusType);
-            writeDocument(doc, filePath);
-        }
-    }
-
-    public void updateOnImport(String listType, String filePath) {
-        Document doc = parseDocument(filePath);
-        if (doc != null) {
-            NodeList nodeList = doc.getElementsByTagName(listType);
-            processUpdateOnImport(nodeList);
-            writeDocument(doc, filePath);
-        }
-    }
-
     private Document parseDocument(String filePath) {
         try {
-            File file = new File(filePath);
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            return db.parse(file);
+            return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filePath));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void removeStatus(String listType, String filePath, String statusType) {
+        Document doc = parseDocument(filePath);
+        if (doc != null) {
+            processRemoveStatus(doc.getElementsByTagName(listType), statusType);
+            writeDocument(doc, filePath);
+        }
     }
 
     private void processRemoveStatus(NodeList nodeList, String statusType) {
@@ -60,24 +45,28 @@ public class XMLProcessor {
         }
     }
 
-    private void processUpdateOnImport(NodeList nodeList) {
+    public void updateOnImport(String listType, String filePath, String bool) {
+        Document doc = parseDocument(filePath);
+        if (doc != null) {
+            processUpdateOnImport(doc.getElementsByTagName(listType), bool);
+            writeDocument(doc, filePath);
+        }
+    }
+
+    private void processUpdateOnImport(NodeList nodeList, String bool) {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Element anime = (Element) nodeList.item(i);
             NodeList updateOnImportList = anime.getElementsByTagName("update_on_import");
             if (updateOnImportList.getLength() > 0) {
                 Element updateOnImport = (Element) updateOnImportList.item(0);
-                updateOnImport.setTextContent("1");
+                updateOnImport.setTextContent(bool);
             }
         }
     }
 
     private void writeDocument(Document doc, String filePath) {
         try {
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(filePath));
-            transformer.transform(source, result);
+            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(doc), new StreamResult(new File(filePath)));
         } catch (TransformerException e) {
             e.printStackTrace();
         }
