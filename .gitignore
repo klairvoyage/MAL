@@ -82,5 +82,8 @@ gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
 
+### Maven ###
+target
+
 ### Java Misc ###
 *.hprof
