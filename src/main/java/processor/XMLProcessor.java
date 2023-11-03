@@ -65,8 +65,18 @@ public class XMLProcessor {
     }
 
     private void writeDocument(Document doc, String filePath) {
+        String path = new File(filePath).getAbsolutePath();
+        if (path.endsWith(".xml")) path = path.substring(0, path.length()-4);
+        File outputFile;
+        int counter = 0;
+        while (true) {
+            String newFileName = path + (counter == 0 ? "" : " (" + counter + ")") + ".xml";
+            outputFile = new File(newFileName);
+            if (!outputFile.exists()) break;
+            counter++;
+        }
         try {
-            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(doc), new StreamResult(new File(filePath)));
+            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(doc), new StreamResult(outputFile));
         } catch (TransformerException e) {
             e.printStackTrace();
         }

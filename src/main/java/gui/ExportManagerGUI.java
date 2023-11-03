@@ -14,7 +14,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
 import java.util.Objects;
-import java.util.Optional;
 import processor.XMLProcessor;
 
 public class ExportManagerGUI extends Application {
@@ -109,22 +108,13 @@ public class ExportManagerGUI extends Application {
             }
 
             listType = listType.toLowerCase();
-
-            Alert alert = createAlert(new Alert(Alert.AlertType.CONFIRMATION,
-                    "This process will overwrite your current .xml-file!"), "Confirmation");
-            alert.setHeaderText("Are you sure you want to proceed?");
-            Optional<ButtonType> result = alert.showAndWait();
-
-            if (result.isPresent() && result.get() == ButtonType.OK){
-                listType = listType.toLowerCase();
-                if (!"none".equals(statusType)) xmlProcessor.removeStatus(listType, filePath, statusType);
-                if ("Yes".equals(importable)) xmlProcessor.updateOnImport(listType, filePath, "1");
-                else xmlProcessor.updateOnImport(listType, filePath, "0");
-                alert = createAlert(new Alert(Alert.AlertType.INFORMATION,
-                        "Congrats! You're ready to re-import it now to https://myanimelist.net/import.php"), "Info");
-                alert.setHeaderText("Process successfully finished!");
-                alert.showAndWait();
-            }
+            if (!"none".equals(statusType)) xmlProcessor.removeStatus(listType, filePath, statusType);
+            if ("Yes".equals(importable)) xmlProcessor.updateOnImport(listType, filePath, "1");
+            else xmlProcessor.updateOnImport(listType, filePath, "0");
+            Alert alert = createAlert(new Alert(Alert.AlertType.INFORMATION,
+                    "Congrats! You're ready to re-import it now to https://myanimelist.net/import.php"), "Info");
+            alert.setHeaderText("Process successfully finished!");
+            alert.showAndWait();
         });
         return startButton;
     }

@@ -1,6 +1,8 @@
 # MAL .xml-Export  Configuration Tool
 
-This Java application allows you to configure an XML file exported from MyAnimeList. You can remove entries based on show status (e.g., Watching, Completed, On-Hold, Dropped, Plan to Watch) and update the importability status of the entries. The tool utilizes the ~~Java Swing~~ JavaFX library to provide a graphical user interface (GUI) for easy interaction.
+This Java application allows you to configure an XML file exported from MyAnimeList. You can remove entries based on show status (e.g., Watching, Completed, On-Hold, Dropped, Plan to Watch) and update the importability status of the entries.
+
+The tool utilizes the ~~Java Swing~~ JavaFX library to provide a graphical user interface (GUI) for easy interaction.
 
 ![Program](src/main/resources/program.png)
 
@@ -35,8 +37,6 @@ The tool modifies the XML file based on the specified options.
 
 - **Removing entries**: The tool iterates through the XML file and removes the entries that match the specified status type. The resulting file will no longer contain those entries.
 - **Updating importability status**: If the option to make all entries importable is enabled, then all entries will be updated on import and will potentially overwrite existing entries).
-
-**Note**: This program overwrites the original XML file!
 
 ## Dependencies
 
